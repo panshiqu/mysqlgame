@@ -3,15 +3,15 @@
 
  Source Server         : localhost
  Source Server Type    : MySQL
- Source Server Version : 50716
+ Source Server Version : 50718
  Source Host           : localhost
  Source Database       : game
 
  Target Server Type    : MySQL
- Target Server Version : 50716
+ Target Server Version : 50718
  File Encoding         : utf-8
 
- Date: 12/20/2016 16:44:38 PM
+ Date: 06/21/2017 22:24:37 PM
 */
 
 SET NAMES utf8mb4;
@@ -32,7 +32,7 @@ CREATE TABLE `game_config` (
 --  Records of `game_config`
 -- ----------------------------
 BEGIN;
-INSERT INTO `game_config` VALUES ('InitScore', '10000', '新注册用户初始分数');
+INSERT INTO `game_config` VALUES ('InitDiamond', '10', '新注册用户初始钻石'), ('InitScore', '10000', '新注册用户初始分数');
 COMMIT;
 
 -- ----------------------------
@@ -77,13 +77,13 @@ CREATE TABLE `user_information` (
   `user_icon` tinyint(3) unsigned NOT NULL DEFAULT '0' COMMENT '头像',
   `user_level` tinyint(3) unsigned NOT NULL DEFAULT '1' COMMENT '等级',
   `user_gender` enum('MALE','FEMALE','UNKNOWN') NOT NULL DEFAULT 'FEMALE' COMMENT '性别',
-  `bind_phone` char(11) NOT NULL COMMENT '手机号',
+  `bind_phone` char(11) NOT NULL DEFAULT '' COMMENT '手机号',
   `is_robot` tinyint(1) unsigned NOT NULL DEFAULT '0' COMMENT '是否机器人',
   `register_ip` varchar(48) NOT NULL COMMENT '注册IP',
   `register_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '注册时间',
   `register_machine` varchar(64) NOT NULL COMMENT '机器码',
   PRIMARY KEY (`user_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=10000000 DEFAULT CHARSET=utf8mb4;
 
 -- ----------------------------
 --  Table structure for `user_treasure`
