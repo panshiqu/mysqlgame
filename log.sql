@@ -3,15 +3,15 @@
 
  Source Server         : localhost
  Source Server Type    : MySQL
- Source Server Version : 50716
+ Source Server Version : 50718
  Source Host           : localhost
  Source Database       : log
 
  Target Server Type    : MySQL
- Target Server Version : 50716
+ Target Server Version : 50718
  File Encoding         : utf-8
 
- Date: 12/20/2016 16:44:49 PM
+ Date: 09/17/2017 14:56:57 PM
 */
 
 SET NAMES utf8mb4;
@@ -25,9 +25,9 @@ CREATE TABLE `user_treasure_log_20161220` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT COMMENT '自增编号',
   `user_id` int(10) unsigned NOT NULL COMMENT '用户编号',
   `cur_score` bigint(20) unsigned NOT NULL COMMENT '当前分数',
-  `var_score` bigint(20) unsigned NOT NULL COMMENT '变化分数',
+  `var_score` bigint(20) NOT NULL COMMENT '变化分数',
   `cur_diamond` bigint(20) unsigned NOT NULL COMMENT '当前钻石',
-  `var_diamond` bigint(20) unsigned NOT NULL COMMENT '变化钻石',
+  `var_diamond` bigint(20) NOT NULL COMMENT '变化钻石',
   `change_type` enum('REGISTER','WINLOSE','SIGNIN') NOT NULL DEFAULT 'WINLOSE' COMMENT '类型',
   `change_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '时间戳',
   PRIMARY KEY (`id`),
