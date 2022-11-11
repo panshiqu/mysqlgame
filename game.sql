@@ -170,7 +170,7 @@ delimiter ;
 -- ----------------------------
 DROP PROCEDURE IF EXISTS `procedure_user_sign_in`;
 delimiter ;;
-CREATE DEFINER=`root`@`localhost` PROCEDURE `procedure_user_sign_in`(IN UserID INT, INOUT ErrNO INT, INOUT ErrDesc VARCHAR(255))
+CREATE DEFINER=`root`@`localhost` PROCEDURE `procedure_user_sign_in`(IN UserID INT)
     DETERMINISTIC
 SIGNIN:BEGIN
 DECLARE TotalDays TINYINT;
@@ -192,7 +192,7 @@ SELECT continuous_days, latest_sign_in_time INTO @ContinuousDays, @LatestSignInT
 
 -- 用户签到记录不存在
 IF @LatestSignInTime IS NULL THEN
-	SET ErrNO = 1, ErrDesc = "用户不存在";
+	SELECT 1, "用户不存在", 0, 0, 0;
 	LEAVE SIGNIN;
 END IF;
 
@@ -200,7 +200,7 @@ CASE TO_DAYS(NOW()) - TO_DAYS(@LatestSignInTime)
 	-- 用户今天已经签过到
 	WHEN 0 THEN
 	BEGIN
-		SET ErrNO = 2, ErrDesc = "今天已签过到";
+		SELECT 2, "今天已签过到", 0, 0, 0;
 		LEAVE SIGNIN;
 	END;
 	
@@ -234,6 +234,8 @@ SELECT score, diamond INTO @ScoreReward, @DiamondReward FROM sign_in_reward WHER
 
 -- 发放签到奖励
 CALL procedure_change_treasure(UserID, @ScoreReward, @DiamondReward, 3);
+
+SELECT 0, "", @TotalDays, @ScoreReward, @DiamondReward;
 END
  ;;
 delimiter ;
@@ -243,12 +245,16 @@ delimiter ;
 -- ----------------------------
 DROP PROCEDURE IF EXISTS `procedure_user_sign_in_days`;
 delimiter ;;
-CREATE DEFINER=`root`@`localhost` PROCEDURE `procedure_user_sign_in_days`(IN UserID INT, INOUT Can TINYINT, INOUT Days TINYINT)
+CREATE DEFINER=`root`@`localhost` PROCEDURE `procedure_user_sign_in_days`(IN UserID INT)
     DETERMINISTIC
 SIGNIN:BEGIN
+DECLARE Can TINYINT;
+DECLARE Days TINYINT;
 DECLARE ContinuousDays TINYINT;
 DECLARE LatestSignInTime TIMESTAMP;
 
+SET @Can = TRUE;
+SET @Days = 0;
 SET @ContinuousDays = NULL;
 SET @LatestSignInTime = NULL;
 
@@ -262,10 +268,12 @@ END IF;
 
 -- 能否签到及连续天数
 CASE TO_DAYS(NOW()) - TO_DAYS(@LatestSignInTime)
-	WHEN 1 THEN SET Can = TRUE, Days = @ContinuousDays;
-	WHEN 0 THEN SET Can = FALSE, Days = @ContinuousDays;
+	WHEN 1 THEN SET @Days = @ContinuousDays;
+	WHEN 0 THEN SET @Can = FALSE, @Days = @ContinuousDays;
 	ELSE UPDATE sign_in_record SET continuous_days = 0 WHERE user_id = UserID;
 END CASE;
+
+SELECT @Can, @Days;
 END
  ;;
 delimiter ;
